@@ -1,0 +1,23 @@
+#swagger配置
+springdoc:
+  version: '1.0.0' #定义版本号
+  packagesToScan: com.fkp.controller #包扫描路径
+  swagger-ui:
+    path: /swagger-ui.html #swagger-ui访问路径 http://ip:端口/swagger-ui.html
+    csrf:
+      enabled: true #启用CSRF支持
+    enabled: true #开启swagger-ui
+    display-request-duration: true # 展示请求所耗时间ms
+    operations-sorter: method #api排序方式 alpha 字母 method http方法
+    groups-order: desc # 排序顺序
+    disable-swagger-default-url: true #禁用swagger-ui默认的petstore网址 默认就是swagger-ui.html
+  model-and-view-allowed: true #运行modelAndView展示（返回页面）
+  show-actuator: true #加了spring-boot-actuator依赖的可开启
+  # 可以通过路径和包名匹配分组
+  group-configs:
+    - group: user
+      packages-to-scan: com.fkp.controller
+#    - group: user
+#      paths-to-match: /user/**
+#    - group: user2
+#      packages-to-scan: com.fkp.user.controller
