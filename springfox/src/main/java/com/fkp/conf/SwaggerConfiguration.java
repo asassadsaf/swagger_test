@@ -32,32 +32,34 @@ public class SwaggerConfiguration {
                 .paths(PathSelectors.any())
                 .build()
                 //添加token认证
-                .securityContexts(securityContexts())
+//                .securityContexts(securityContexts())
                 .securitySchemes(securitySchemes());
     }
 
+    //设置token认证给@ApiOperation(value = "查询用户", authorizations = {@Authorization(value = "queryUserAuthorization")})指定的接口
     private List<ApiKey> securitySchemes(){
         //设置请求头信息
         List<ApiKey> result= new ArrayList<>();
-        ApiKey apiKey = new ApiKey("Authorization","Authorization","Header");
+        ApiKey apiKey = new ApiKey("queryUserAuthorization","Authorization","Header");
         result.add(apiKey);
         return result;
     }
 
-    private List<SecurityContext> securityContexts(){
-        //设置需要登录认证的路径
-        List<SecurityContext> result = new ArrayList<>();
-        result.add(getContextByPath("/user/query"));
-        return result;
-    }
-
-    private SecurityContext getContextByPath(String pathRegex) {
-        return SecurityContext.builder()
-                .securityReferences(defaultAuth())
-                .forPaths(PathSelectors.regex(pathRegex))
-                .build();
-    }
-
+    //通过指定路径给接口设置token认证
+//    private List<SecurityContext> securityContexts(){
+//        //设置需要登录认证的路径
+//        List<SecurityContext> result = new ArrayList<>();
+//        result.add(getContextByPath("/user/query"));
+//        return result;
+//    }
+//
+//    private SecurityContext getContextByPath(String pathRegex) {
+//        return SecurityContext.builder()
+//                .securityReferences(defaultAuth())
+//                .forPaths(PathSelectors.regex(pathRegex))
+//                .build();
+//    }
+//
     private List<SecurityReference> defaultAuth() {
         List<SecurityReference> result = new ArrayList<>();
         AuthorizationScope authorizationScope = new AuthorizationScope("global","accessEverything");
