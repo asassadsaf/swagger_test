@@ -1,6 +1,9 @@
-package com.fkp.conf;
+package auto;
 
+import bean.SwaggerProperties;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,20 +23,17 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * @author fengkunpeng
+ */
 @Configuration
 @EnableSwagger2
 @EnableConfigurationProperties(SwaggerProperties.class)
 //标注在配置类上，当启动环境为dev时才加载@Bean标注bean
 @Profile("dev")
-//@ConditionalOnClass(EnableSwagger2.class)
-//@ConditionalOnProperty
-//        (
-//                prefix = "com.sansec.swagger",
-//                value = "enabled",
-//                matchIfMissing = true
-//        )
-//@Import(BeanValidatorPluginsConfiguration.class)
-public class SwaggerConfiguration {
+@ConditionalOnClass(EnableSwagger2.class)
+@ConditionalOnProperty(prefix = "common.swagger", value = "enabled", matchIfMissing = true)
+public class SwaggerAutoConfiguration {
 
     public static final String AUTHORIZATION = "Authorization";
 
@@ -106,8 +106,4 @@ public class SwaggerConfiguration {
         return new ArrayList<>(Collections.singleton(
                 new SecurityReference(AUTHORIZATION, authorizationScopes)));
     }
-
 }
-
-
-
