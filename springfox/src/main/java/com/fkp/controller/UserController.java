@@ -40,7 +40,7 @@ public class UserController {
         return BaseResponse.success(id);
     }
 
-    @ApiOperation(value = "查询用户")
+    @ApiOperation(value = "查询用户", authorizations = {@Authorization(value = "queryUserAuthorization")})
     @RequestMapping(value = "/query", method = RequestMethod.GET)
     public BaseResponse<String> query(String id){
         return BaseResponse.success(id);
