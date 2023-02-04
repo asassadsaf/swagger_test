@@ -1,6 +1,7 @@
 common:
   swagger:
     basePackage: com.fkp
+    headerApiKeys: SecToken
 spring:
   mvc:
     pathmatch:

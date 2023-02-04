@@ -1,0 +1,11 @@
+spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+common:
+  swagger:
+    basePackage: com.fkp
+    headerApiKeys:
+      - SecToken
+    queryApiKeys:
+      - queryParam

@@ -1,6 +1,8 @@
 package com.fkp.conf;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,17 +27,9 @@ import java.util.List;
 @EnableConfigurationProperties(SwaggerProperties.class)
 //标注在配置类上，当启动环境为dev时才加载@Bean标注bean
 @Profile("dev")
-//@ConditionalOnClass(EnableSwagger2.class)
-//@ConditionalOnProperty
-//        (
-//                prefix = "com.sansec.swagger",
-//                value = "enabled",
-//                matchIfMissing = true
-//        )
-//@Import(BeanValidatorPluginsConfiguration.class)
+@ConditionalOnClass(EnableSwagger2.class)
+@ConditionalOnProperty(prefix = "common.swagger", value = "enabled", matchIfMissing = true)
 public class SwaggerConfiguration {
-
-    public static final String AUTHORIZATION = "Authorization";
 
     @Autowired
     private SwaggerProperties swaggerProperties;
@@ -88,7 +82,12 @@ public class SwaggerConfiguration {
     }
 
     private List<ApiKey> securitySchemes() {
-        return new ArrayList<>(Collections.singleton(new ApiKey(AUTHORIZATION, AUTHORIZATION, "header")));
+        List<ApiKey> apiKeyList = new ArrayList<>();
+        //添加到请求头中
+        swaggerProperties.getHeaderApiKeysList().forEach(name -> apiKeyList.add(new ApiKey(name, name, "header")));
+        //添加到请求参数中
+        swaggerProperties.getQueryApiKeysList().forEach(name -> apiKeyList.add(new ApiKey(name, name, "query")));
+        return apiKeyList;
     }
 
     private List<SecurityContext> securityContexts() {
@@ -100,11 +99,11 @@ public class SwaggerConfiguration {
     }
 
     private List<SecurityReference> defaultAuth() {
-        AuthorizationScope authorizationScope = new AuthorizationScope("global", "accessEverything");
-        AuthorizationScope[] authorizationScopes = new AuthorizationScope[1];
-        authorizationScopes[0] = authorizationScope;
-        return new ArrayList<>(Collections.singleton(
-                new SecurityReference(AUTHORIZATION, authorizationScopes)));
+        AuthorizationScope[] authorizationScopes = {new AuthorizationScope("global", "accessEverything")};
+        List<SecurityReference> list = new ArrayList<>();
+        swaggerProperties.getHeaderApiKeysList().forEach(name -> list.add(new SecurityReference(name,authorizationScopes)));
+        swaggerProperties.getQueryApiKeysList().forEach(name -> list.add(new SecurityReference(name, authorizationScopes)));
+        return list;
     }
 
 }

@@ -35,8 +35,6 @@ import java.util.List;
 @ConditionalOnProperty(prefix = "common.swagger", value = "enabled", matchIfMissing = true)
 public class SwaggerAutoConfiguration {
 
-    public static final String AUTHORIZATION = "Authorization";
-
     @Autowired
     private SwaggerProperties swaggerProperties;
 
@@ -88,7 +86,12 @@ public class SwaggerAutoConfiguration {
     }
 
     private List<ApiKey> securitySchemes() {
-        return new ArrayList<>(Collections.singleton(new ApiKey(AUTHORIZATION, AUTHORIZATION, "header")));
+        List<ApiKey> apiKeyList = new ArrayList<>();
+        //添加到请求头中
+        swaggerProperties.getHeaderApiKeysList().forEach(name -> apiKeyList.add(new ApiKey(name, name, "header")));
+        //添加到请求参数中
+        swaggerProperties.getQueryApiKeysList().forEach(name -> apiKeyList.add(new ApiKey(name, name, "query")));
+        return apiKeyList;
     }
 
     private List<SecurityContext> securityContexts() {
@@ -100,10 +103,10 @@ public class SwaggerAutoConfiguration {
     }
 
     private List<SecurityReference> defaultAuth() {
-        AuthorizationScope authorizationScope = new AuthorizationScope("global", "accessEverything");
-        AuthorizationScope[] authorizationScopes = new AuthorizationScope[1];
-        authorizationScopes[0] = authorizationScope;
-        return new ArrayList<>(Collections.singleton(
-                new SecurityReference(AUTHORIZATION, authorizationScopes)));
+        AuthorizationScope[] authorizationScopes = {new AuthorizationScope("global", "accessEverything")};
+        List<SecurityReference> list = new ArrayList<>();
+        swaggerProperties.getHeaderApiKeysList().forEach(name -> list.add(new SecurityReference(name,authorizationScopes)));
+        swaggerProperties.getQueryApiKeysList().forEach(name -> list.add(new SecurityReference(name, authorizationScopes)));
+        return list;
     }
 }

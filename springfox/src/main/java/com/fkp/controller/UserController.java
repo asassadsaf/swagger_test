@@ -4,10 +4,7 @@ import com.fkp.entity.User;
 import com.fkp.param.BaseResponse;
 import io.swagger.annotations.*;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "/user", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -21,7 +18,9 @@ public class UserController {
             @ApiResponse(code = 404, message = "请求路径没有或页面跳转路径不对")
     })
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public BaseResponse<User> add(@RequestBody User user){
+    //post请求也可以通过@RequestParam获取Query Params的参数，测试swagger添加query类型的ApiKey
+    public BaseResponse<User> add(@RequestBody User user, @RequestParam(value = "param", required = false) String param){
+        System.out.println(param);
         return BaseResponse.success(user);
     }
 
