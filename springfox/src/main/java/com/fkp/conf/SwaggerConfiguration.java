@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableSwagger2
 @EnableConfigurationProperties(SwaggerProperties.class)
 //标注在配置类上，当启动环境为dev时才加载@Bean标注bean
